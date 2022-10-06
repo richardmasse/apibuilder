@@ -1,0 +1,51 @@
+node:
+  port: 3000
+
+db: 
+  server: localhost
+  user: [user]
+  password: [password]
+  database: [databaseName]
+
+auth:
+  -
+    name: azure
+    aplicationId: [azure_application_id]
+    tenantId: [azure_tenant_id]
+    jwks_uri: https://login.microsoftonline.com/common/discovery/keys
+    permission:
+      header: scp
+      value: access_api
+  -
+    name: jwt
+    client_id: [custom_application_id]
+    client_secret: [custom_application_secret]
+    grant_type: client_credential
+
+api:
+  base: /apitest/api/v1
+  rest:
+  -
+    type: get
+    path: /user/:codecollab
+    query: select * from users
+      where codecollab=@codecollab
+    auth: jwt
+  
+  -
+    type: get
+    path: /periode
+    query: select * from periode
+
+  -
+    type: get
+    path: /users
+    query: select * from users
+  -
+    type: post
+    path: /user
+    query: insert into users (codecollab, login, password, role) values (@codecollab, @login, @password, @role)
+  -
+    type: delete
+    path: /user/:codecollab
+    query: delete from users where codecollab = @codecollab
